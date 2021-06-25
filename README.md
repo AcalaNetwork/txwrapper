@@ -1,1 +1,1 @@
-# txwrapper-acala
+# @acala-network/txwrapper-examples
