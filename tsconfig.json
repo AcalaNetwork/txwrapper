@@ -1,0 +1,6 @@
+{
+  "files": [],
+  "include": [],
+  "exclude": ["**/node_modules"],
+  "references": [{ "path": "./packages/txwrapper" }, { "path": "./packages/txwrapper-examples" }]
+}

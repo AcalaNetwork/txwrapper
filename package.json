@@ -1,0 +1,17 @@
+{
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/txwrapper",
+    "packages/txwrapper-examples"
+  ],
+  "scripts": {
+    "build": "tsc --build tsconfig.json",
+    "clean": "rm -rf packages/txwrapper/dist packages/txwrapper-examples/dist",
+    "example:sidecar": "yarn build && cd packages/txwrapper-examples/ && yarn run sidecar",
+    "example:rpc": "yarn build && cd packages/txwrapper-examples/ && yarn run rpc"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.4"
+  }
+}

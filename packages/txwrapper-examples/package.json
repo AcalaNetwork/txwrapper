@@ -1,0 +1,40 @@
+{
+  "name": "@acala-network/txwrapper-examples",
+  "version": "0.1.0",
+  "author": "Acala Developers <hello@acala.network>",
+  "description": "Tools for constructing Acala transactions offline",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/AcalaNetwork/txwrapper",
+  "public": false,
+  "bugs": {
+    "url": "https://github.com/AcalaNetwork/txwrapper/issues"
+  },
+  "homepage": "https://github.com/AcalaNetwork/txwrapper",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.json",
+    "sidecar": "node dist/sidecar",
+    "rpc": "node dist/rpc"
+  },
+  "dependencies": {
+    "@acala-network/txwrapper": "^0.1.0",
+    "@polkadot/api": "^4.15.1",
+    "@substrate/txwrapper-polkadot": "^1.2.3",
+    "@substrate/txwrapper-registry": "^1.2.3",
+    "lodash": "^4.17.21",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.4"
+  }
+}
