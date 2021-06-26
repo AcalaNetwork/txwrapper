@@ -12,7 +12,7 @@ yarn add @acala-network/txwrapper-acala
 import {
   construct,
   methods,
-} from '@acala-network/txwrapper-acala"';
+} from '@acala-network/txwrapper-acala';
 
 const unsigned = methods.currencies.transfer(
   {
@@ -33,4 +33,4 @@ const signature = myOfflineSigning(signingPayload);
 const tx = construct.signedTx(unsigned, signature, { metadataRpc, registry });
 ```
 
-[See examples of how to use acala-txwrapper](https://github.com/AcalaNetwork/txwrapper/blob/master/examples/README.md).
+[See examples of how to use acala-txwrapper](https://github.com/AcalaNetwork/txwrapper/blob/master/examples/README.md)
