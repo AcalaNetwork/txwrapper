@@ -33,4 +33,4 @@ const signature = myOfflineSigning(signingPayload);
 const tx = construct.signedTx(unsigned, signature, { metadataRpc, registry });
 ```
 
-[See examples of how to use acala-txwrapper.](https://github.com/AcalaNetwork/txwrapper/examples/README.md).
+[See examples of how to use acala-txwrapper](https://github.com/AcalaNetwork/txwrapper/blob/master/examples/README.md).
