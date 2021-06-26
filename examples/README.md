@@ -12,7 +12,7 @@ Here's a mini-tutorial on how txwrapper-acala can interact with a Substrate chai
    wget -qO- https://get.docker.com/ | sh
    ```
 
-You can also [build and run an Acala node](https://wiki.acala.network/maintain/network-maintainers/node-management) with Rust.
+   You can also [build and run an Acala node](https://wiki.acala.network/maintain/network-maintainers/node-management) with Rust.
 
 2. After install Docker, pull the latest acala node image and start the dev container. Be sure to externalize RPC and WS with the `--ws-external` and `--rpc-external` flags respectively.
 
