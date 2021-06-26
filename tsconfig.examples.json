@@ -7,8 +7,7 @@
     "strict": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "outDir": "./lib",
-    "rootDir": "./src"
+    "outDir": "./examples/build"
   },
-  "include": ["src"]
+  "include": ["examples"]
 }

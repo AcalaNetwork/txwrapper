@@ -1,17 +1,39 @@
 {
+  "name": "@acala-network/txwrapper-acala",
   "version": "0.1.0",
-  "private": true,
-  "workspaces": [
-    "packages/txwrapper",
-    "packages/txwrapper-examples"
+  "author": "Acala Developers <hello@acala.network>",
+  "description": "Helper functions for Acala offline transaction generation.",
+  "files": [
+    "lib"
   ],
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "private": false,
+  "repository": "https://github.com/AcalaNetwork/txwrapper",
+  "bugs": "https://github.com/AcalaNetwork/txwrapper/issues",
+  "homepage": "https://github.com/AcalaNetwork/txwrapper#readme",
+  "engine": {
+    "node": ">=14"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "scripts": {
     "build": "tsc --build tsconfig.json",
-    "clean": "rm -rf packages/txwrapper/dist packages/txwrapper-examples/dist",
-    "example:sidecar": "yarn build && cd packages/txwrapper-examples/ && yarn run sidecar",
-    "example:rpc": "yarn build && cd packages/txwrapper-examples/ && yarn run rpc"
+    "build:examples": "tsc --build tsconfig.examples.json",
+    "example:rpc": "yarn build:examples && node examples/build/examples/currency-transfer-rpc",
+    "example:sidecar": "yarn build:examples && node examples/build/examples/currency-transfer-sidecar"
+  },
+  "dependencies": {
+    "@acala-network/type-definitions": "^0.7.4-1",
+    "@substrate/txwrapper-core": "^1.2.3",
+    "@substrate/txwrapper-orml": "^1.2.3"
   },
   "devDependencies": {
-    "typescript": "^4.3.4"
+    "lodash": "^4.17.21",
+    "ts-node": "9.1.1",
+    "typescript": "4.1.5"
   }
 }

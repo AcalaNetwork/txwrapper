@@ -1,22 +1,28 @@
 import { Keyring } from '@polkadot/api';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { getRegistry } from '@substrate/txwrapper-registry';
-import { construct, decode, deriveAddress, methods, TokenSymbol } from '@acala-network/txwrapper';
+import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
 
-import { get, post, signWith } from './utils';
+import { construct, decode, deriveAddress, methods, TokenSymbol, getRegistry } from '../src';
+import { get, post } from './util';
 
 const SIDECAR_HOST = 'http://127.0.0.1:8080';
 
 async function main(): Promise<void> {
   await cryptoWaitReady();
 
+  // Create a new keyring and add an Alice account.
   const alice = new Keyring().addFromUri('//Alice', { name: 'Alice' }, 'sr25519');
 
-  console.log(`From address: ${deriveAddress(alice.publicKey, 42)}\n`);
+  console.log(`Alice's account address: ${deriveAddress(alice.publicKey, 42)}\n`);
 
+  // Pull info from the node to construct an offline transaction. It's up
+  // to you how you retrieve this info but here we are using a local API
+  // sidecar. We are also pulling the balance info of Alice's account to
+  // ensure we are using a valid nonce.
   const material = await get(`${SIDECAR_HOST}/transaction/material`);
   const balance = await get(`${SIDECAR_HOST}/accounts/${deriveAddress(alice.publicKey, 42)}/balance-info`);
 
+  // Unpack the info pulled from the node.
   const {
     at: { hash, height },
     genesisHash,
@@ -27,6 +33,7 @@ async function main(): Promise<void> {
     metadata,
   } = material;
 
+  // Create a new registry instance using metadata from node.
   const registry = getRegistry({
     chainName,
     specName,
@@ -34,6 +41,7 @@ async function main(): Promise<void> {
     metadataRpc: metadata,
   });
 
+  // Create an unsigned currency transfer transaction.
   const unsigned = methods.currencies.transfer(
     {
       amount: '900719',
@@ -47,7 +55,7 @@ async function main(): Promise<void> {
       eraPeriod: 64,
       genesisHash,
       metadataRpc: metadata,
-      nonce: balance.nonce++, // This doesn't take into account pending transactions in the pool
+      nonce: balance.nonce + 1, // This doesn't take into account pending transactions in the pool
       specVersion,
       tip: 0,
       transactionVersion: txVersion,
@@ -58,36 +66,45 @@ async function main(): Promise<void> {
     }
   );
 
+  // Construct the signing payload from the unsigned transaction.
   const signingPayload = construct.signingPayload(unsigned, { registry });
-  const signature = signWith(alice, signingPayload, {
-    metadataRpc: metadata,
-    registry,
-  });
 
+  // Sign the payload.
+  const { signature } = registry
+    .createType('ExtrinsicPayload', signingPayload, {
+      version: EXTRINSIC_VERSION,
+    })
+    .sign(alice);
+
+  // Create a signed transaction.
   const tx = construct.signedTx(unsigned, signature, {
     metadataRpc: metadata,
     registry,
   });
 
   const expectedTxHash = construct.txHash(tx);
+
+  // Decode transaction payload.
   const payloadInfo = decode(signingPayload, {
     metadataRpc: metadata,
     registry,
   });
 
-  console.log(`Chain node: ${chainName}`);
-  console.log(`Tx signature: ${signature}`);
-  console.log(`Expected hash: ${expectedTxHash}\n`);
+  console.log(`Chain node: ${chainName}\n`);
+  console.log(`Tx signature: ${signature}\n`);
 
   console.log(
-    `Sending transaction\n  To: ${JSON.stringify(payloadInfo.method.args.dest)}\n` +
+    `Decoded transaction\n  To (Bob): ${JSON.stringify(payloadInfo.method.args.dest)}\n` +
       `  Amount: ${payloadInfo.method.args.amount}\n` +
       `  CurrencyId: ${JSON.stringify(payloadInfo.method.args.currencyId)}\n`
   );
 
+  // Send the transaction to the node. Txwrapper doesn't care how
+  // you send this transaction but here we are using the API sidecar.
   let response = await post(`${SIDECAR_HOST}/transaction`, { tx: tx });
 
-  console.log(`Sent with hash: ${response.hash}`);
+  console.log(`Expected hash: ${expectedTxHash}`);
+  console.log(`Tx hash: ${response.hash}`);
 }
 
 main().catch((error) => {

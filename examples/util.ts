@@ -1,24 +1,7 @@
-import { KeyringPair } from '@polkadot/keyring/types';
-import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
-import { createMetadata, OptionsWithMeta } from '@substrate/txwrapper-polkadot';
-import fetch from 'node-fetch';
-
 /**
- * Sign payload
+ * @ignore
  */
-export function signWith(pair: KeyringPair, signingPayload: string, options: OptionsWithMeta): string {
-  const { registry, metadataRpc } = options;
-
-  registry.setMetadata(createMetadata(registry, metadataRpc));
-
-  const { signature } = registry
-    .createType('ExtrinsicPayload', signingPayload, {
-      version: EXTRINSIC_VERSION,
-    })
-    .sign(pair);
-
-  return signature;
-}
+import fetch from 'node-fetch';
 
 /**
  * Get data through endoint

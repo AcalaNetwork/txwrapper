@@ -1,19 +1,23 @@
 import { Keyring } from '@polkadot/api';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
-import { getRegistry } from '@substrate/txwrapper-registry';
-import { construct, decode, deriveAddress, methods, TokenSymbol } from '@acala-network/txwrapper';
+import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
 
-import { rpc, signWith } from './utils';
+import { construct, decode, deriveAddress, methods, TokenSymbol, getRegistry } from '../src';
+import { rpc } from './util';
 
 const NODE = 'http://127.0.0.1:9933';
 
 async function main(): Promise<void> {
   await cryptoWaitReady();
 
+  // Create a new keyring and add an Alice account.
   const alice = new Keyring().addFromUri('//Alice', { name: 'Alice' }, 'sr25519');
 
-  console.log(`From address: ${deriveAddress(alice.publicKey, 42)}\n`);
+  console.log(`Alice's account address: ${deriveAddress(alice.publicKey, 42)}\n`);
 
+  // Pull info from the node to construct an offline transaction. It's up
+  // to you how you retrieve this info but here we are using RPC calls to the
+  // local node.
   const { block } = await rpc(NODE, 'chain_getBlock');
   const blockHash = await rpc(NODE, 'chain_getBlockHash');
   const genesisHash = await rpc(NODE, 'chain_getBlockHash', [0]);
@@ -21,6 +25,7 @@ async function main(): Promise<void> {
   const chainName = await rpc(NODE, 'system_chain');
   const { specVersion, transactionVersion, specName } = await rpc(NODE, 'state_getRuntimeVersion');
 
+  // Create a new registry instance using metadata from node.
   const registry = getRegistry({
     chainName,
     specName,
@@ -28,6 +33,7 @@ async function main(): Promise<void> {
     metadataRpc,
   });
 
+  // Create an unsigned currency transfer transaction.
   const unsigned = methods.currencies.transfer(
     {
       amount: '900719',
@@ -41,7 +47,7 @@ async function main(): Promise<void> {
       eraPeriod: 64,
       genesisHash,
       metadataRpc,
-      nonce: 0, // This needs to be incremented from user account nonce
+      nonce: 4,
       specVersion,
       tip: 0,
       transactionVersion,
@@ -52,36 +58,46 @@ async function main(): Promise<void> {
     }
   );
 
+  // Construct the signing payload from the unsigned transaction.
   const signingPayload = construct.signingPayload(unsigned, { registry });
-  const signature = signWith(alice, signingPayload, {
-    metadataRpc,
-    registry,
-  });
 
+  // Sign the payload.
+  const { signature } = registry
+    .createType('ExtrinsicPayload', signingPayload, {
+      version: EXTRINSIC_VERSION,
+    })
+    .sign(alice);
+
+  // Create a signed transaction.
   const tx = construct.signedTx(unsigned, signature, {
     metadataRpc,
     registry,
   });
 
   const expectedTxHash = construct.txHash(tx);
+
+  // Decode transaction payload.
   const payloadInfo = decode(signingPayload, {
     metadataRpc,
     registry,
   });
 
-  console.log(`Chain node: ${chainName}`);
-  console.log(`Tx signature: ${signature}`);
-  console.log(`Expected hash: ${expectedTxHash}\n`);
+  console.log(`Chain node: ${chainName}\n`);
+  console.log(`Tx signature: ${signature}\n`);
 
   console.log(
-    `Sending transaction\n  To: ${JSON.stringify(payloadInfo.method.args.dest)}\n` +
+    `Decoded transaction\n  To (Bob): ${JSON.stringify(payloadInfo.method.args.dest)}\n` +
       `  Amount: ${payloadInfo.method.args.amount}\n` +
       `  CurrencyId: ${JSON.stringify(payloadInfo.method.args.currencyId)}\n`
   );
 
+  // Send the transaction to the node. Txwrapper doesn't care how
+  // you send this transaction but here we are using an RPC call
+  // to the local node.
   let hash = await rpc(NODE, 'author_submitExtrinsic', [tx]);
 
-  console.log(`Sent with hash: ${hash}`);
+  console.log(`Expected hash: ${expectedTxHash}`);
+  console.log(`Tx hash: ${hash}`);
 }
 
 main().catch((error) => {
