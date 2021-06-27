@@ -29,10 +29,10 @@
   "dependencies": {
     "@acala-network/type-definitions": "^0.7.4-1",
     "@substrate/txwrapper-core": "^1.2.3",
-    "@substrate/txwrapper-orml": "^1.2.3"
+    "@substrate/txwrapper-orml": "^1.2.3",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "lodash": "^4.17.21",
     "ts-node": "9.1.1",
     "typescript": "4.1.5"
   }
