@@ -1,11 +1,16 @@
 import { typesBundleForPolkadot } from '@acala-network/type-definitions';
 import { OverrideBundleType } from '@polkadot/types/types';
-import { getRegistryBase, GetRegistryOptsCore, getSpecTypes, TypeRegistry } from '@substrate/txwrapper-core';
+import {
+  getRegistryBase,
+  GetRegistryOptsCore,
+  getSpecTypes,
+  TypeRegistry
+} from '@substrate/txwrapper-core';
 import { methods as ORMLMethods } from '@substrate/txwrapper-orml';
 
 // Export methods of pallets included in the Acala / Mandala runtimes.
 export const methods = {
-  currencies: ORMLMethods.currencies,
+  currencies: ORMLMethods.currencies
 };
 
 export * from './TokenSymbol';
@@ -22,18 +27,18 @@ const KNOWN_CHAIN_PROPERTIES = {
   acala: {
     ss58Format: 10,
     tokenDecimals: 12,
-    tokenSymbol: 'ACA',
+    tokenSymbol: 'ACA'
   },
   karura: {
     ss58Format: 8,
     tokenDecimals: 12,
-    tokenSymbol: 'KAR',
+    tokenSymbol: 'KAR'
   },
   mandala: {
     ss58Format: 42,
     tokenDecimals: 12,
-    tokenSymbol: 'ACA',
-  },
+    tokenSymbol: 'ACA'
+  }
 };
 
 /**
@@ -53,16 +58,16 @@ export function getRegistry({
   chainName,
   specVersion,
   metadataRpc,
-  properties,
+  properties
 }: GetRegistryOpts): TypeRegistry {
   const registry = new TypeRegistry();
   registry.setKnownTypes({
-    typesBundle: typesBundleForPolkadot as unknown as OverrideBundleType,
+    typesBundle: typesBundleForPolkadot as unknown as OverrideBundleType
   });
 
   return getRegistryBase({
     chainProperties: properties,
     specTypes: getSpecTypes(registry, chainName, specName, specVersion),
-    metadataRpc,
+    metadataRpc
   });
 }

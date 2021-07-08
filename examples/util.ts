@@ -6,55 +6,65 @@ import fetch from 'node-fetch';
 /**
  * Get data through endoint
  */
-export const get = async (endpoint: string): Promise<{ [index: string]: any }> => {
-  const response = await fetch(endpoint);
-  const result = await response.json();
-  if (result.error) {
-    throw new Error(`${result.error} ${result.cause}`);
-  }
+export const get = async <T>(endpoint: string): Promise<T> => {
+  const result = await fetch(endpoint).then((response) => {
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    return response.json() as Promise<T>;
+  });
+
   return result;
 };
 
 /**
  * Send data through endpoint
  */
-export const post = async (
+export const post = async <T>(
   endpoint: string,
   body: { [index: string]: any } = {}
-): Promise<{ [index: string]: any }> => {
-  const response = await fetch(endpoint, {
+): Promise<T> => {
+  const result = await fetch(endpoint, {
     body: JSON.stringify(body),
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-    },
+      'Content-Type': 'application/json'
+    }
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    return response.json() as Promise<T>;
   });
-  const result = await response.json();
-  if (result.error) {
-    throw new Error(`${result.error} ${result.cause}`);
-  }
+
   return result;
 };
 
 /**
  * Send JSONRPC data to node
  */
-export const rpc = async (node: string, method: string, params: any[] = []): Promise<any> => {
-  const response = await fetch(node, {
+export const rpc = async <T = string>(
+  node: string,
+  method: string,
+  params: any[] = []
+): Promise<T> => {
+  const { result } = await fetch(node, {
     body: JSON.stringify({
       id: 1,
       jsonrpc: '2.0',
       method,
-      params,
+      params
     }),
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    method: 'POST',
+    method: 'POST'
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    return response.json() as Promise<{ result: T }>;
   });
-  const { error, result } = await response.json();
-  if (error) {
-    throw new Error(`${error.code} ${error.message}: ${JSON.stringify(error.data)}`);
-  }
+
   return result;
 };

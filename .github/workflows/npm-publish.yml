@@ -2,8 +2,10 @@ name: NPM Publish
 on:
   release:
     types: [created]
+
 jobs:
-  build:
+  publish:
+    name: Publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -11,8 +13,10 @@ jobs:
         with:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm install
-      - run: npm run build
-      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+     - name: publish
+        run: |
+          yarn install --immutable
+          yarn build
+          yarn publish

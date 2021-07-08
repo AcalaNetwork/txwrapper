@@ -5,5 +5,5 @@ export enum TokenSymbol {
   DOT = 'DOT',
   XBTC = 'XBTC',
   LDOT = 'LDOT',
-  RENBTC = 'RENBTC',
+  RENBTC = 'RENBTC'
 }
