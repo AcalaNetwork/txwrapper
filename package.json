@@ -21,10 +21,15 @@
     "registry": "https://registry.npmjs.org"
   },
   "scripts": {
+    "lint": "polkadot-dev-run-lint",
     "build": "tsc --build tsconfig.json",
     "build:examples": "tsc --build tsconfig.examples.json",
     "example:rpc": "yarn build:examples && node examples/build/examples/currency-transfer-rpc",
     "example:sidecar": "yarn build:examples && node examples/build/examples/currency-transfer-sidecar"
+  },
+  "resolutions": {
+    "madge": "^4.0.1",
+    "marked": "^2.0.0"
   },
   "dependencies": {
     "@acala-network/type-definitions": "^0.7.4-1",
