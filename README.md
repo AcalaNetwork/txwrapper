@@ -4,11 +4,11 @@ Acala Txwrapper is a library for generating offline transactions for the Acala c
 
 ## Get Started
 
-```
+```sh
 yarn add @acala-network/txwrapper-acala
 ```
 
-```
+```ts
 import {
   construct,
   methods,
