@@ -32,9 +32,9 @@
     "marked": "^2.0.0"
   },
   "dependencies": {
-    "@acala-network/type-definitions": "^0.7.4-1",
-    "@substrate/txwrapper-core": "^1.2.5",
-    "@substrate/txwrapper-orml": "^1.2.5",
+    "@acala-network/type-definitions": "^2.3.1",
+    "@substrate/txwrapper-core": "^1.2.17",
+    "@substrate/txwrapper-orml": "^1.2.17",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
