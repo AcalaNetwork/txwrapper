@@ -1,6 +1,6 @@
 {
   "name": "@acala-network/txwrapper-acala",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Acala Developers <hello@acala.network>",
   "description": "Helper functions for Acala offline transaction generation.",
   "files": [
@@ -29,7 +29,9 @@
   },
   "resolutions": {
     "madge": "^4.0.1",
-    "marked": "^2.0.0"
+    "marked": "^2.0.0",
+    "set-value": "^4.0.1",
+    "ansi-regex": "^5.0.1"
   },
   "dependencies": {
     "@acala-network/type-definitions": "^2.3.1",
@@ -40,6 +42,8 @@
   "devDependencies": {
     "@open-web3/dev-config": "^0.1.13",
     "node-fetch": "^2.6.1",
+    "set-value": "^4.0.1",
+    "ansi-regex": "^5.0.1",
     "ts-node": "9.1.1",
     "typescript": "4.1.5"
   }
