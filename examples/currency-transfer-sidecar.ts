@@ -56,12 +56,13 @@ async function main(): Promise<void> {
     metadata
   } = material;
 
+  const metadataRpc = metadata as `0x${string}`;
   // Create a new registry instance using metadata from node.
   const registry = getRegistry({
     chainName,
     specName,
     specVersion,
-    metadataRpc: metadata
+    metadataRpc
   });
 
   // Create an unsigned currency transfer transaction.
@@ -77,14 +78,14 @@ async function main(): Promise<void> {
       blockNumber: height,
       eraPeriod: 64,
       genesisHash,
-      metadataRpc: metadata,
+      metadataRpc,
       nonce: balance.nonce + 1, // This doesn't take into account pending transactions in the pool
       specVersion,
       tip: 0,
       transactionVersion: txVersion
     },
     {
-      metadataRpc: metadata,
+      metadataRpc,
       registry
     }
   );
@@ -101,7 +102,7 @@ async function main(): Promise<void> {
 
   // Create a signed transaction.
   const tx = construct.signedTx(unsigned, signature, {
-    metadataRpc: metadata,
+    metadataRpc,
     registry
   });
 
@@ -109,7 +110,7 @@ async function main(): Promise<void> {
 
   // Decode transaction payload.
   const payloadInfo = decode(signingPayload, {
-    metadataRpc: metadata,
+    metadataRpc,
     registry
   });
 
