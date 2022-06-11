@@ -36,7 +36,7 @@ async function main(): Promise<void> {
   const { block } = await rpc<{ block: Block }>(NODE, 'chain_getBlock');
   const blockHash = await rpc(NODE, 'chain_getBlockHash');
   const genesisHash = await rpc(NODE, 'chain_getBlockHash', [0]);
-  const metadataRpc = await rpc(NODE, 'state_getMetadata');
+  const metadataRpc = (await rpc(NODE, 'state_getMetadata')) as `0x${string}`;
   const chainName = await rpc(NODE, 'system_chain');
   const { specVersion, transactionVersion, specName } =
     await rpc<RuntimeVersion>(NODE, 'state_getRuntimeVersion');
@@ -65,7 +65,7 @@ async function main(): Promise<void> {
       eraPeriod: 64,
       genesisHash,
       metadataRpc,
-      nonce: 4,
+      nonce: 6666,
       specVersion,
       tip: 0,
       transactionVersion

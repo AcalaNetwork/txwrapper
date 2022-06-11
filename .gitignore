@@ -64,3 +64,8 @@ typings/
 
 # next.js build output
 .next
+
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+.pnp.*
